@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <style>
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
+    }
+    .grid-container-list {
+      display: grid;
+      grid-template-columns: repeat(5, 0.5fr);
+    }
+    #drag-zone-1, #drag-zone-2 {
+      width: 250px;
+      height: 200px;
+      padding: 10px;
+      border: 1px solid #4f4d4d;
+    }
+    .img_1 {
+        width: 100px;
+        height: 100px;
+    }
+    .img_2{
+        width: 100%; /* make the image width equal to the container width */
+        height: 100%; /* make the image height equal to the container height */
+        object-fit: contain; /* make the image cover the entire container */
+        margin: 0 auto; /* center the image horizontally */
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h3>Drag the images into the rectangles:</h3>
+  <button onclick="location.reload()">Restart</button>
+  <div>
+  <div class="grid-container">
+    <div id="drag-zone-1" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="https://pixeldrain.com/api/file/HwGvRJkm" class="img_2"></div>
+    <div id="drag-zone-2" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="https://pixeldrain.com/api/file/Pmdx6tUf"  class="img_2"></div>
+  </div>
+  <div class="grid-container-list" id="imagesuperlist">
+
+    <img id="non" src="https://pixeldrain.com/api/file/eqMpUXRV" class="img_1" draggable="true" ondragstart="drag(event)">
+    <img id="yes" src="https://pixeldrain.com/api/file/CDmLCcjg" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="yes" src="https://pixeldrain.com/api/file/LrrK4Avr" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="non" src="https://pixeldrain.com/api/file/GQvLQ9XH" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="yes" src="https://pixeldrain.com/api/file/t2WHX4VU" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="non" src="https://pixeldrain.com/api/file/mrCz8txa" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="yes" src="https://pixeldrain.com/api/file/RjrAN5Fw" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="non" src="https://pixeldrain.com/api/file/VFETSiJF" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="non" src="https://pixeldrain.com/api/file/uJ7WvFEH" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="yes" src="https://pixeldrain.com/api/file/5ZG3LcGm" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="yes" src="https://pixeldrain.com/api/file/jzoztH9U" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="non" src="https://pixeldrain.com/api/file/Ca7WngWC" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="yes" src="https://pixeldrain.com/api/file/n1eYKbW4" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="non" src="https://pixeldrain.com/api/file/wZNNqyZK" class="img_1" draggable="true" ondragstart="drag(event)">
+    <img id="yes" src="https://pixeldrain.com/api/file/H6567iPJ" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="yes" src="https://pixeldrain.com/api/file/gusap1VK" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="non" src="https://pixeldrain.com/api/file/s1hAXECV" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="non" src="https://pixeldrain.com/api/file/t1H2Ngot" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="non" src="https://pixeldrain.com/api/file/hhL8cpbW" draggable="true" class="img_1" ondragstart="drag(event)">
+    <img id="yes" src="https://pixeldrain.com/api/file/iXPyBntg" draggable="true" class="img_1" ondragstart="drag(event)">
+     </div>
+    </div>
+
+  <script>
+    function randomizeImages() {
+            const container = document.getElementById('imagesuperlist');
+            const images = Array.from(container.children);
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+            images.sort(() => Math.random() - 0.5);
+            images.forEach(img => container.appendChild(img));
+        }
+
+        window.onload = randomizeImages;
+    let score = 0;
+    let dragged;
+
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+
+    function drag(event) {
+      event.dataTransfer.setData("text", event.target.id);
+      dragged = event.target;
+      event.dataTransfer.dropEffect = 'move';
+      event.target.style.opacity = .3;
+    }
+
+    function drop(event) {
+      event.preventDefault();
+      let target = event.target;
+      while (target && !target.id.startsWith('drag-zone-')) {
+        target = target.parentNode;
+      }
+      if (target && (target.id === 'drag-zone-1' || target.id === 'drag-zone-2')) {
+        dragged.style.opacity = '';
+        dragged.classList.toggle('hidden')
+        target.appendChild(dragged);
+        checkScore();
+      }
+    }
+
+    function checkScore() {
+      let zone1Images = document.getElementById("drag-zone-1").children;
+      let zone2Images = document.getElementById("drag-zone-2").children;
+      let correct = 0;
+      for (let i = 0; i < zone1Images.length; i++) {
+        if (zone1Images[i].id === `non`) {
+          correct++;
+        }
+      }
+      for (let i = 0; i < zone2Images.length; i++) {
+        console.log(zone2Images[i].id)
+        if (zone2Images[i].id === `yes`) {
+          correct++;
+        }
+      }
+      score = correct;
+      document.getElementById("score").innerHTML = `Score: ${score}`;
+      if (score === 20) {
+      alert("Ganaste!!!!");
+    }
+    }
+   
+  </script>
+  <p id="score">Score: 0</p>
+</body>
+</html>
